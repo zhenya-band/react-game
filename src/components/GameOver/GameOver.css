@@ -1,0 +1,19 @@
+.game-over {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-over__text {
+  font-size: 45px;
+}
+
+.game-over__score {
+  font-size: 35px;
+}
+
+.game-over__btn {
+  margin-top: 20px;
+}

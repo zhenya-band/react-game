@@ -2,24 +2,29 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Header from './components/Header/Header';
-import Snake from './components/Snake/Snake';
-import Food from './components/Food/Food';
 import Footer from './components/Footer/Footer';
 import 'antd/dist/antd.css';
 import Layout, { Content } from 'antd/lib/layout/layout';
+import Game from './components/Game/Game';
+import GameOver from './components/GameOver/GameOver';
 
+
+const initialSnakeParts = [
+  [0, 0],
+  [20, 0],
+  [40, 0],
+]
+
+const initialState = {
+  snakeParts: initialSnakeParts,
+  direction: 'RIGHT',
+  foodPosition: [80, 80],
+  score: 3,
+  snakeColor: 'green',
+  isGameOver: false,
+};
 class App extends React.Component {
-  state = {
-    snakeParts: [
-      [0, 0],
-      [20, 0],
-      [40, 0],
-    ],
-    direction: 'RIGHT',
-    foodPosition: [80, 80],
-    score: 3,
-    snakeColor: 'green',
-  };
+  state = initialState;
 
   componentDidMount() {
     setInterval(this.moveSnake, 100);
@@ -101,10 +106,20 @@ class App extends React.Component {
     parts.pop();
     parts.forEach((part) => {
       if (head[0] === part[0] && head[1] === part[1]) {
-        // this.onGameOver();
-        console.log('gg');
+        this.onGameOver();
       }
     });
+  }
+
+  onGameOver() {
+    this.setState({
+      snakeParts: initialSnakeParts,
+      isGameOver: true,
+    });
+  }
+
+  startNewGame = () => {
+    this.setState(initialState)
   }
 
   increaseSnake() {
@@ -131,16 +146,7 @@ class App extends React.Component {
         <Layout>
           <Header />
           <Content className="content">
-            <div className='score'>Score : {this.state.score}</div>
-            <main className='main'>
-              <div className='game-board'>
-                <Snake
-                  color={this.state.snakeColor}
-                  snakeParts={this.state.snakeParts}
-                />
-                <Food foodPosition={this.state.foodPosition} />
-              </div>
-            </main>
+            {this.state.isGameOver ? <GameOver startNewGame={this.startNewGame} score={this.state.score} /> : <Game {...this.state} />}
           </Content>
           <Footer />
         </Layout>
