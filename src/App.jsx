@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Header from './components/Header/Header';
 import Snake from './components/Snake/Snake';
+import Food from './components/Food/Food';
 
 class App extends React.Component {
   state = {
@@ -13,11 +14,22 @@ class App extends React.Component {
       [0, 60],
     ],
     direction: 'RIGHT',
+    foodPosition: [80, 80],
   };
 
   componentDidMount() {
-    setInterval(this.moveSnake, 200);
+    setInterval(this.moveSnake, 150);
     document.onkeydown = this.onKeyDown;
+  }
+
+  componentDidUpdate() {
+    this.increaseSnake();
+  }
+
+  getRandomFoodPosition() {
+    let x = parseInt(Math.random() * 25) * 20;
+    let y = parseInt(Math.random() * 25) * 20;
+    return [x, y];
   }
 
   onKeyDown = (event) => {
@@ -78,6 +90,23 @@ class App extends React.Component {
     });
   };
 
+  increaseSnake() {
+    let parts = [...this.state.snakeParts];
+    let head = parts[parts.length - 1];
+    if (
+      head[0] === this.state.foodPosition[0] &&
+      head[1] === this.state.foodPosition[1]
+    ) {
+      parts.unshift([]);
+      this.setState({
+        snakeParts: parts,
+        foodPosition: this.getRandomFoodPosition(),
+      });
+    } else {
+      console.log('не попал');
+    }
+  }
+
   render() {
     return (
       <div className='App'>
@@ -85,6 +114,7 @@ class App extends React.Component {
         <main className='main'>
           <div className='game-board'>
             <Snake snakeParts={this.state.snakeParts} />
+            <Food foodPosition={this.state.foodPosition} />
           </div>
         </main>
         <footer className='footer'></footer>
