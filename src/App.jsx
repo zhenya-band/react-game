@@ -4,26 +4,31 @@ import './App.css';
 import Header from './components/Header/Header';
 import Snake from './components/Snake/Snake';
 import Food from './components/Food/Food';
+import Footer from './components/Footer/Footer';
+import 'antd/dist/antd.css';
+import Layout, { Content } from 'antd/lib/layout/layout';
 
 class App extends React.Component {
   state = {
     snakeParts: [
       [0, 0],
-      [0, 20],
-      [0, 40],
-      [0, 60],
+      [20, 0],
+      [40, 0],
     ],
     direction: 'RIGHT',
     foodPosition: [80, 80],
+    score: 3,
+    snakeColor: 'green',
   };
 
   componentDidMount() {
-    setInterval(this.moveSnake, 150);
+    setInterval(this.moveSnake, 100);
     document.onkeydown = this.onKeyDown;
   }
 
   componentDidUpdate() {
     this.increaseSnake();
+    this.checkIsGameOver();
   }
 
   getRandomFoodPosition() {
@@ -90,6 +95,18 @@ class App extends React.Component {
     });
   };
 
+  checkIsGameOver() {
+    let parts = [...this.state.snakeParts];
+    let head = parts[parts.length - 1];
+    parts.pop();
+    parts.forEach((part) => {
+      if (head[0] === part[0] && head[1] === part[1]) {
+        // this.onGameOver();
+        console.log('gg');
+      }
+    });
+  }
+
   increaseSnake() {
     let parts = [...this.state.snakeParts];
     let head = parts[parts.length - 1];
@@ -101,6 +118,7 @@ class App extends React.Component {
       this.setState({
         snakeParts: parts,
         foodPosition: this.getRandomFoodPosition(),
+        score: this.state.score + 1,
       });
     } else {
       console.log('не попал');
@@ -110,14 +128,22 @@ class App extends React.Component {
   render() {
     return (
       <div className='App'>
-        <Header />
-        <main className='main'>
-          <div className='game-board'>
-            <Snake snakeParts={this.state.snakeParts} />
-            <Food foodPosition={this.state.foodPosition} />
-          </div>
-        </main>
-        <footer className='footer'></footer>
+        <Layout>
+          <Header />
+          <Content className="content">
+            <div className='score'>Score : {this.state.score}</div>
+            <main className='main'>
+              <div className='game-board'>
+                <Snake
+                  color={this.state.snakeColor}
+                  snakeParts={this.state.snakeParts}
+                />
+                <Food foodPosition={this.state.foodPosition} />
+              </div>
+            </main>
+          </Content>
+          <Footer />
+        </Layout>
       </div>
     );
   }

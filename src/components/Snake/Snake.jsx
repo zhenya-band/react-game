@@ -6,7 +6,7 @@ export const Snake = (props) => {
       <div
         className='snake'
         key={i}
-        style={{ left: part[0], top: part[1] }}
+        style={{ left: part[0], top: part[1], backgroundColor: props.color }}
       ></div>
     );
   });
