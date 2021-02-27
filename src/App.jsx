@@ -1,0 +1,96 @@
+import React from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Header from './components/Header/Header';
+import Snake from './components/Snake/Snake';
+
+class App extends React.Component {
+  state = {
+    snakeParts: [
+      [0, 0],
+      [0, 20],
+      [0, 40],
+      [0, 60],
+    ],
+    direction: 'RIGHT',
+  };
+
+  componentDidMount() {
+    setInterval(this.moveSnake, 200);
+    document.onkeydown = this.onKeyDown;
+  }
+
+  onKeyDown = (event) => {
+    switch (event.keyCode) {
+      case 38:
+      case 87:
+        if (this.state.direction !== 'DOWN') {
+          this.setState({ direction: 'UP' });
+        }
+        break;
+      case 40:
+      case 83:
+        if (this.state.direction !== 'UP') {
+          this.setState({ direction: 'DOWN' });
+        }
+        break;
+      case 37:
+      case 65:
+        if (this.state.direction !== 'RIGHT') {
+          this.setState({ direction: 'LEFT' });
+        }
+        break;
+      case 39:
+      case 68:
+        if (this.state.direction !== 'LEFT') {
+          this.setState({ direction: 'RIGHT' });
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  moveSnake = () => {
+    let parts = [...this.state.snakeParts];
+    let head = parts[parts.length - 1];
+
+    switch (this.state.direction) {
+      case 'RIGHT':
+        head = [head[0] + 20, head[1]];
+        break;
+      case 'LEFT':
+        head = [head[0] - 20, head[1]];
+        break;
+      case 'DOWN':
+        head = [head[0], head[1] + 20];
+        break;
+      case 'UP':
+        head = [head[0], head[1] - 20];
+        break;
+      default:
+        break;
+    }
+    parts.push(head);
+    parts.shift();
+    this.setState({
+      snakeParts: parts,
+    });
+  };
+
+  render() {
+    return (
+      <div className='App'>
+        <Header />
+        <main className='main'>
+          <div className='game-board'>
+            <Snake snakeParts={this.state.snakeParts} />
+          </div>
+        </main>
+        <footer className='footer'></footer>
+      </div>
+    );
+  }
+}
+
+export default App;
