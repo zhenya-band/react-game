@@ -1,19 +1,24 @@
 import React from 'react';
+import 'antd/dist/antd.css';
 import logo from './logo.svg';
 import './App.css';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import 'antd/dist/antd.css';
 import Layout, { Content } from 'antd/lib/layout/layout';
 import Game from './components/Game/Game';
 import GameOver from './components/GameOver/GameOver';
-
+import musicUrl from './assets/music.mp3';
+import { Button, Slider } from 'antd';
+import Modal from 'antd/lib/modal/Modal';
+import { SoundOutlined } from '@ant-design/icons';
+import NoSoundIcon from './components/NoSoundIcon/NoSoundIcon';
+import Settings from './components/Settings/Settings';
 
 const initialSnakeParts = [
   [0, 0],
   [20, 0],
   [40, 0],
-]
+];
 
 const initialState = {
   snakeParts: initialSnakeParts,
@@ -22,7 +27,13 @@ const initialState = {
   score: 3,
   snakeColor: 'green',
   isGameOver: false,
+  musicIsPlaying: false,
+  isModalVisible: false,
+  musicVolume: 0,
 };
+
+const music = new Audio();
+music.src = musicUrl;
 class App extends React.Component {
   state = initialState;
 
@@ -34,6 +45,7 @@ class App extends React.Component {
   componentDidUpdate() {
     this.increaseSnake();
     this.checkIsGameOver();
+    music.volume = this.state.musicVolume;
   }
 
   getRandomFoodPosition() {
@@ -111,6 +123,13 @@ class App extends React.Component {
     });
   }
 
+  stopMusic = () => {
+    this.setState({
+      musicIsPlaying: false,
+    });
+    music.pause();
+  };
+
   onGameOver() {
     this.setState({
       snakeParts: initialSnakeParts,
@@ -119,8 +138,8 @@ class App extends React.Component {
   }
 
   startNewGame = () => {
-    this.setState(initialState)
-  }
+    this.setState(initialState);
+  };
 
   increaseSnake() {
     let parts = [...this.state.snakeParts];
@@ -135,18 +154,46 @@ class App extends React.Component {
         foodPosition: this.getRandomFoodPosition(),
         score: this.state.score + 1,
       });
-    } else {
-      console.log('не попал');
     }
   }
+
+  openModal = () => {
+    this.setState({
+      isModalVisible: true,
+    });
+  };
+
+  handleMusicVolumeChange = (value) => {
+    if (value === 1) {
+      music.play();
+    }
+    this.setState({
+      musicVolume: value / 100,
+    });
+  };
+
+  handleCancel = () => this.setState({ isModalVisible: false })
 
   render() {
     return (
       <div className='App'>
         <Layout>
-          <Header />
-          <Content className="content">
-            {this.state.isGameOver ? <GameOver startNewGame={this.startNewGame} score={this.state.score} /> : <Game {...this.state} />}
+          <Header openModal={this.openModal} />
+          <Settings
+            visible={this.state.isModalVisible}
+            handleCancel={this.handleCancel}
+            handleMusicVolumeChange={this.handleMusicVolumeChange}
+            value={this.state.musicVolume * 100}
+          />
+          <Content className='content'>
+            {this.state.isGameOver ? (
+              <GameOver
+                startNewGame={this.startNewGame}
+                score={this.state.score}
+              />
+            ) : (
+              <Game {...this.state} />
+            )}
           </Content>
           <Footer />
         </Layout>
