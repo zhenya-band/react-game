@@ -8,10 +8,7 @@ import Layout, { Content } from 'antd/lib/layout/layout';
 import Game from './components/Game/Game';
 import GameOver from './components/GameOver/GameOver';
 import musicUrl from './assets/music.mp3';
-import { Button, Slider } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
-import { SoundOutlined } from '@ant-design/icons';
-import NoSoundIcon from './components/NoSoundIcon/NoSoundIcon';
+import eatSoundUrl from './assets/eat.mp3'
 import Settings from './components/Settings/Settings';
 
 const initialSnakeParts = [
@@ -30,15 +27,18 @@ const initialState = {
   musicIsPlaying: false,
   isModalVisible: false,
   musicVolume: 0,
+  soundVolume: 0
 };
 
 const music = new Audio();
 music.src = musicUrl;
+const eatSound = new Audio();
+eatSound.src = eatSoundUrl;
 class App extends React.Component {
   state = initialState;
 
   componentDidMount() {
-    setInterval(this.moveSnake, 100);
+    setInterval(this.moveSnake, 150)
     document.onkeydown = this.onKeyDown;
   }
 
@@ -47,6 +47,7 @@ class App extends React.Component {
     this.checkIsGameOver();
     this.checkIfOnBorders()
     music.volume = this.state.musicVolume;
+    eatSound.volume = this.state.soundVolume;
   }
 
   getRandomFoodPosition() {
@@ -149,6 +150,7 @@ class App extends React.Component {
       head[0] === this.state.foodPosition[0] &&
       head[1] === this.state.foodPosition[1]
     ) {
+      eatSound.play();
       parts.unshift([]);
       this.setState({
         snakeParts: parts,
@@ -165,13 +167,19 @@ class App extends React.Component {
   };
 
   handleMusicVolumeChange = (value) => {
-    if (value === 1) {
+    if (value > 1) {
       music.play();
     }
     this.setState({
       musicVolume: value / 100,
     });
   };
+
+  handleSoundVolumeChange = (value) => {
+    this.setState({
+      soundVolume: value / 100,
+    });
+  }
 
   checkIfOnBorders() {
     let parts = [...this.state.snakeParts];
@@ -218,7 +226,9 @@ class App extends React.Component {
             visible={this.state.isModalVisible}
             handleCancel={this.handleCancel}
             handleMusicVolumeChange={this.handleMusicVolumeChange}
-            value={this.state.musicVolume * 100}
+            handleSoundVolumeChange={this.handleSoundVolumeChange}
+            musicVolume={this.state.musicVolume * 100}
+            soundVolume={this.state.soundVolume * 100}
           />
           <Content className='content'>
             {this.state.isGameOver ? (

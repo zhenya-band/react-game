@@ -23,7 +23,7 @@ const Settings = (props) => {
           <Slider
             className='settings-music__slider'
             onChange={props.handleMusicVolumeChange}
-            value={props.value}
+            value={props.musicVolume}
           />
           <SoundOutlined />
         </div>
@@ -34,8 +34,8 @@ const Settings = (props) => {
           <NoSoundIcon />
           <Slider
             className='settings-sound__slider'
-            // onChange={}
-            // value={}
+            onChange={props.handleSoundVolumeChange}
+            value={props.soundVolume}
           />
           <SoundOutlined />
         </div>
