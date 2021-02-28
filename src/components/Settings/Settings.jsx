@@ -51,6 +51,17 @@ const Settings = (props) => {
           buttonStyle='solid'
         />
       </div>
+      <div className='settings-item'>
+        <div className="settings-item__title">Snake speed</div>
+        <Radio.Group
+          className="settings-snake-speed"
+          options={props.snakeSpeeds}
+          onChange={props.onSnakeSpeedChange}
+          value={props.snakeSpeed}
+          optionType='button'
+          buttonStyle='solid'
+        />
+      </div>
     </Modal>
   );
 };

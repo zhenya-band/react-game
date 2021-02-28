@@ -19,9 +19,15 @@ const initialSnakeParts = [
   [60, 0],
 ];
 
-const optionsWithDisabled = [
+const snakeTypes = [
   { label: 'Square', value: 'Square' },
   { label: 'Round', value: 'Round' },
+];
+
+const snakeSpeeds = [
+  { label: 'Slow', value: 150 },
+  { label: 'Medium', value: 100 },
+  { label: 'Fast', value: 50 },
 ];
 
 const initialState = {
@@ -36,22 +42,30 @@ const initialState = {
   musicVolume: 0.2,
   soundVolume: 0.2,
   currentSnakeType: 'Square',
-  snakeTypes: optionsWithDisabled,
+  currentSnakeSpeed: 150,
+  snakeTypes: snakeTypes,
+  snakeSpeeds: snakeSpeeds
 };
 
 const music = new Audio();
 music.src = musicUrl;
 const eatSound = new Audio();
 eatSound.src = eatSoundUrl;
+let interval;
+
 class App extends React.Component {
   state = initialState;
 
   componentDidMount() {
-    setInterval(this.moveSnake, 150);
+    interval = setInterval(this.moveSnake, this.state.currentSnakeSpeed);
     document.onkeydown = this.onKeyDown;
   }
-
-  componentDidUpdate() {
+  
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.currentSnakeSpeed !== this.state.currentSnakeSpeed){
+      clearInterval(interval);
+      interval = setInterval(this.moveSnake, this.state.currentSnakeSpeed);
+    }
     this.increaseSnake();
     this.checkIsGameOver();
     this.checkIfOnBorders();
@@ -230,6 +244,12 @@ class App extends React.Component {
     });
   };
 
+  onSnakeSpeedChange = (event) => {
+    this.setState({
+      currentSnakeSpeed: event.target.value,
+    });
+  };
+
   handleCancel = () => this.setState({ isModalVisible: false });
 
   render() {
@@ -249,6 +269,9 @@ class App extends React.Component {
               snakeType={this.state.currentSnakeType}
               onSnakeTypeChange={this.onSnakeTypeChange}
               snakeTypes={this.state.snakeTypes}
+              snakeSpeeds={this.state.snakeSpeeds}
+              onSnakeSpeedChange={this.onSnakeSpeedChange}
+              snakeSpeed={this.state.currentSnakeSpeed}
             />
             <Content className='content'>
               <Route
