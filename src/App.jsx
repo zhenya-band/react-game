@@ -15,9 +15,9 @@ import NoSoundIcon from './components/NoSoundIcon/NoSoundIcon';
 import Settings from './components/Settings/Settings';
 
 const initialSnakeParts = [
-  [0, 0],
   [20, 0],
   [40, 0],
+  [60, 0],
 ];
 
 const initialState = {
@@ -45,6 +45,7 @@ class App extends React.Component {
   componentDidUpdate() {
     this.increaseSnake();
     this.checkIsGameOver();
+    this.checkIfOnBorders()
     music.volume = this.state.musicVolume;
   }
 
@@ -171,6 +172,40 @@ class App extends React.Component {
       musicVolume: value / 100,
     });
   };
+
+  checkIfOnBorders() {
+    let parts = [...this.state.snakeParts];
+    let head = this.state.snakeParts[this.state.snakeParts.length - 1];
+    if (head[0] >= 500) {
+      head[0] = 0;
+      parts.pop();
+      parts.push(head)
+      this.setState({
+        snakeParts: parts
+      })
+    } else if (head[1] >= 500) {
+      head[1] = 0;
+      parts.pop();
+      parts.push(head)
+      this.setState({
+        snakeParts: parts
+      })
+    } else if (head[0] < 0) {
+      head[0] = 480;
+      parts.pop();
+      parts.push(head)
+      this.setState({
+        snakeParts: parts
+      })
+    } else if (head[1] < 0) {
+      head[1] = 480;
+      parts.pop();
+      parts.push(head)
+      this.setState({
+        snakeParts: parts
+      })
+    }
+  }
 
   handleCancel = () => this.setState({ isModalVisible: false })
 
