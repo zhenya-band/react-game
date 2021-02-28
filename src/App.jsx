@@ -8,8 +8,10 @@ import Layout, { Content } from 'antd/lib/layout/layout';
 import Game from './components/Game/Game';
 import GameOver from './components/GameOver/GameOver';
 import musicUrl from './assets/music.mp3';
-import eatSoundUrl from './assets/eat.mp3'
+import eatSoundUrl from './assets/eat.mp3';
 import Settings from './components/Settings/Settings';
+import { BrowserRouter, Route, Link, Redirect } from 'react-router-dom';
+import { Button } from 'antd';
 
 const initialSnakeParts = [
   [20, 0],
@@ -19,7 +21,7 @@ const initialSnakeParts = [
 
 const optionsWithDisabled = [
   { label: 'Square', value: 'Square' },
-  { label: 'Round', value: 'Round' }
+  { label: 'Round', value: 'Round' },
 ];
 
 const initialState = {
@@ -31,10 +33,10 @@ const initialState = {
   isGameOver: false,
   musicIsPlaying: false,
   isModalVisible: false,
-  musicVolume: 0,
-  soundVolume: 0,
+  musicVolume: 0.2,
+  soundVolume: 0.2,
   currentSnakeType: 'Square',
-  snakeTypes: optionsWithDisabled
+  snakeTypes: optionsWithDisabled,
 };
 
 const music = new Audio();
@@ -45,14 +47,14 @@ class App extends React.Component {
   state = initialState;
 
   componentDidMount() {
-    setInterval(this.moveSnake, 150)
+    setInterval(this.moveSnake, 150);
     document.onkeydown = this.onKeyDown;
   }
 
   componentDidUpdate() {
     this.increaseSnake();
     this.checkIsGameOver();
-    this.checkIfOnBorders()
+    this.checkIfOnBorders();
     music.volume = this.state.musicVolume;
     eatSound.volume = this.state.soundVolume;
   }
@@ -186,7 +188,7 @@ class App extends React.Component {
     this.setState({
       soundVolume: value / 100,
     });
-  }
+  };
 
   checkIfOnBorders() {
     let parts = [...this.state.snakeParts];
@@ -194,71 +196,86 @@ class App extends React.Component {
     if (head[0] >= 500) {
       head[0] = 0;
       parts.pop();
-      parts.push(head)
+      parts.push(head);
       this.setState({
-        snakeParts: parts
-      })
+        snakeParts: parts,
+      });
     } else if (head[1] >= 500) {
       head[1] = 0;
       parts.pop();
-      parts.push(head)
+      parts.push(head);
       this.setState({
-        snakeParts: parts
-      })
+        snakeParts: parts,
+      });
     } else if (head[0] < 0) {
       head[0] = 480;
       parts.pop();
-      parts.push(head)
+      parts.push(head);
       this.setState({
-        snakeParts: parts
-      })
+        snakeParts: parts,
+      });
     } else if (head[1] < 0) {
       head[1] = 480;
       parts.pop();
-      parts.push(head)
+      parts.push(head);
       this.setState({
-        snakeParts: parts
-      })
+        snakeParts: parts,
+      });
     }
   }
 
   onSnakeTypeChange = (event) => {
     this.setState({
-      currentSnakeType: event.target.value
-    })
-  }
+      currentSnakeType: event.target.value,
+    });
+  };
 
-  handleCancel = () => this.setState({ isModalVisible: false })
+  handleCancel = () => this.setState({ isModalVisible: false });
 
   render() {
     return (
-      <div className='App'>
-        <Layout>
-          <Header openModal={this.openModal} />
-          <Settings
-            visible={this.state.isModalVisible}
-            handleCancel={this.handleCancel}
-            handleMusicVolumeChange={this.handleMusicVolumeChange}
-            handleSoundVolumeChange={this.handleSoundVolumeChange}
-            musicVolume={this.state.musicVolume * 100}
-            soundVolume={this.state.soundVolume * 100}
-            snakeType={this.state.currentSnakeType}
-            onSnakeTypeChange={this.onSnakeTypeChange}
-            snakeTypes={this.state.snakeTypes}
-          />
-          <Content className='content'>
-            {this.state.isGameOver ? (
-              <GameOver
-                startNewGame={this.startNewGame}
-                score={this.state.score}
+      <BrowserRouter>
+        {this.state.isGameOver && <Redirect to='/game-over' />}
+        <div className='App'>
+          <Layout>
+            <Header openModal={this.openModal} />
+            <Settings
+              visible={this.state.isModalVisible}
+              handleCancel={this.handleCancel}
+              handleMusicVolumeChange={this.handleMusicVolumeChange}
+              handleSoundVolumeChange={this.handleSoundVolumeChange}
+              musicVolume={this.state.musicVolume * 100}
+              soundVolume={this.state.soundVolume * 100}
+              snakeType={this.state.currentSnakeType}
+              onSnakeTypeChange={this.onSnakeTypeChange}
+              snakeTypes={this.state.snakeTypes}
+            />
+            <Content className='content'>
+              <Route
+                path='/game-over'
+                exact
+                render={() => (
+                  <GameOver
+                    startNewGame={this.startNewGame}
+                    score={this.state.score}
+                  />
+                )}
               />
-            ) : (
-              <Game {...this.state} />
-            )}
-          </Content>
-          <Footer />
-        </Layout>
-      </div>
+              <Route path='/' exact>
+                <Button size="large" type='primary'>
+                  <Link to='game'>start</Link>
+                </Button>
+              </Route>
+              <Route
+                path='/game'
+                exact
+                render={() => <Game {...this.state} />}
+              />
+            </Content>
+            <Footer />
+          </Layout>
+        </div>
+      </BrowserRouter>
     );
   }
 }

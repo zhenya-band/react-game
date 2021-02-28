@@ -1,10 +1,11 @@
 import React from 'react';
 import Food from '../Food/Food';
 import Snake from '../Snake/Snake';
+import './Game.css';
 
 const Game = (props) => {
   return (
-    <div>
+    <div className='game'>
       <div className='score'>Score : {props.score}</div>
       <main className='main'>
         <div className='game-board'>
