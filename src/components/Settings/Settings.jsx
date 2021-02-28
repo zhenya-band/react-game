@@ -1,4 +1,4 @@
-import { Slider } from 'antd';
+import { Radio, Slider } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
 import NoSoundIcon from '../NoSoundIcon/NoSoundIcon';
@@ -17,7 +17,7 @@ const Settings = (props) => {
       // onCancel={handleCancel}
     >
       <div className='settings-item'>
-        <div className="settings-item__title">Music</div>
+        <div className='settings-item__title'>Music</div>
         <div className='settings-music'>
           <NoSoundIcon />
           <Slider
@@ -29,7 +29,7 @@ const Settings = (props) => {
         </div>
       </div>
       <div className='settings-item'>
-        <div className="settings-item__title">Sound</div>
+        <div className='settings-item__title'>Sound</div>
         <div className='settings-sound'>
           <NoSoundIcon />
           <Slider
@@ -39,6 +39,17 @@ const Settings = (props) => {
           />
           <SoundOutlined />
         </div>
+      </div>
+      <div className='settings-item'>
+        <div className="settings-item__title">Snake type</div>
+        <Radio.Group
+          className="settings-snake-type"
+          options={props.snakeTypes}
+          onChange={props.onSnakeTypeChange}
+          value={props.snakeType}
+          optionType='button'
+          buttonStyle='solid'
+        />
       </div>
     </Modal>
   );

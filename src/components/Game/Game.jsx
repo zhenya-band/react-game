@@ -11,6 +11,7 @@ const Game = (props) => {
           <Snake
             color={props.snakeColor}
             snakeParts={props.snakeParts}
+            snakeType={props.currentSnakeType}
           />
           <Food foodPosition={props.foodPosition} />
         </div>

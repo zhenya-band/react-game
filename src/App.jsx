@@ -17,6 +17,11 @@ const initialSnakeParts = [
   [60, 0],
 ];
 
+const optionsWithDisabled = [
+  { label: 'Square', value: 'Square' },
+  { label: 'Round', value: 'Round' }
+];
+
 const initialState = {
   snakeParts: initialSnakeParts,
   direction: 'RIGHT',
@@ -27,7 +32,9 @@ const initialState = {
   musicIsPlaying: false,
   isModalVisible: false,
   musicVolume: 0,
-  soundVolume: 0
+  soundVolume: 0,
+  currentSnakeType: 'Square',
+  snakeTypes: optionsWithDisabled
 };
 
 const music = new Audio();
@@ -215,6 +222,12 @@ class App extends React.Component {
     }
   }
 
+  onSnakeTypeChange = (event) => {
+    this.setState({
+      currentSnakeType: event.target.value
+    })
+  }
+
   handleCancel = () => this.setState({ isModalVisible: false })
 
   render() {
@@ -229,6 +242,9 @@ class App extends React.Component {
             handleSoundVolumeChange={this.handleSoundVolumeChange}
             musicVolume={this.state.musicVolume * 100}
             soundVolume={this.state.soundVolume * 100}
+            snakeType={this.state.currentSnakeType}
+            onSnakeTypeChange={this.onSnakeTypeChange}
+            snakeTypes={this.state.snakeTypes}
           />
           <Content className='content'>
             {this.state.isGameOver ? (
