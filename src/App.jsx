@@ -12,6 +12,7 @@ import eatSoundUrl from './assets/eat.mp3';
 import Settings from './components/Settings/Settings';
 import { BrowserRouter, Route, Link, Redirect } from 'react-router-dom';
 import { Button } from 'antd';
+import { BestScores } from './components/BestScores/BestScores';
 
 const initialSnakeParts = [
   [20, 0],
@@ -30,22 +31,24 @@ const snakeSpeeds = [
   { label: 'Fast', value: 50 },
 ];
 
-const initialState = {
-  snakeParts: initialSnakeParts,
-  direction: 'RIGHT',
-  foodPosition: [80, 80],
-  score: 3,
-  snakeColor: 'green',
-  isGameOver: false,
-  musicIsPlaying: false,
-  isModalVisible: false,
-  musicVolume: 0.2,
-  soundVolume: 0.2,
-  currentSnakeType: 'Square',
-  currentSnakeSpeed: 150,
-  snakeTypes: snakeTypes,
-  snakeSpeeds: snakeSpeeds
-};
+// const initialState = {
+//   snakeParts: initialSnakeParts,
+//   direction: 'RIGHT',
+//   foodPosition: [80, 80],
+//   score: 3,
+//   snakeColor: 'green',
+//   isGameOver: false,
+//   musicIsPlaying: false,
+//   isModalVisible: false,
+//   isScoresVisible: false,
+//   musicVolume: 0.01,
+//   soundVolume: 0.2,
+//   currentSnakeType: 'Square',
+//   currentSnakeSpeed: 150,
+//   snakeTypes: snakeTypes,
+//   snakeSpeeds: snakeSpeeds,
+//   bestScores: JSON.parse(localStorage.getItem('score')) || [],
+// };
 
 const music = new Audio();
 music.src = musicUrl;
@@ -54,15 +57,34 @@ eatSound.src = eatSoundUrl;
 let interval;
 
 class App extends React.Component {
-  state = initialState;
+  initialState = {
+    snakeParts: initialSnakeParts,
+    direction: 'RIGHT',
+    foodPosition: [80, 80],
+    score: 3,
+    snakeColor: 'green',
+    isGameOver: false,
+    musicIsPlaying: false,
+    isModalVisible: false,
+    isScoresVisible: false,
+    musicVolume: 0,
+    soundVolume: 0.2,
+    currentSnakeType: 'Square',
+    currentSnakeSpeed: 150,
+    snakeTypes: snakeTypes,
+    snakeSpeeds: snakeSpeeds,
+    bestScores: JSON.parse(localStorage.getItem('score')) || [],
+  };
+
+  state = this.initialState;
 
   componentDidMount() {
     interval = setInterval(this.moveSnake, this.state.currentSnakeSpeed);
     document.onkeydown = this.onKeyDown;
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
-    if(prevState.currentSnakeSpeed !== this.state.currentSnakeSpeed){
+    if (prevState.currentSnakeSpeed !== this.state.currentSnakeSpeed) {
       clearInterval(interval);
       interval = setInterval(this.moveSnake, this.state.currentSnakeSpeed);
     }
@@ -157,13 +179,35 @@ class App extends React.Component {
 
   onGameOver() {
     this.setState({
-      snakeParts: initialSnakeParts,
+      snakeParts: [[]],
       isGameOver: true,
+      bestScores: [
+        ...this.state.bestScores,
+        {
+          key: this.state.bestScores.length + 1,
+          number: this.state.bestScores.length + 1,
+          score: this.state.score,
+        },
+      ],
     });
+    localStorage.setItem(
+      'score',
+      JSON.stringify([
+        ...this.state.bestScores,
+        {
+          key: this.state.bestScores.length + 1,
+          number: this.state.bestScores.length + 1,
+          score: this.state.score,
+        },
+      ])
+    );
   }
 
   startNewGame = () => {
-    this.setState(initialState);
+    this.setState({
+      ...this.initialState,
+      bestScores: JSON.parse(localStorage.getItem('score')),
+    });
   };
 
   increaseSnake() {
@@ -183,16 +227,19 @@ class App extends React.Component {
     }
   }
 
-  openModal = () => {
+  openSettings = () => {
     this.setState({
       isModalVisible: true,
     });
   };
 
+  openScores = () => {
+    this.setState({
+      isScoresVisible: true,
+    });
+  };
+
   handleMusicVolumeChange = (value) => {
-    if (value > 1) {
-      music.play();
-    }
     this.setState({
       musicVolume: value / 100,
     });
@@ -252,13 +299,18 @@ class App extends React.Component {
 
   handleCancel = () => this.setState({ isModalVisible: false });
 
+  handleScoresClose = () => this.setState({ isScoresVisible: false });
+
   render() {
     return (
       <BrowserRouter>
         {this.state.isGameOver && <Redirect to='/game-over' />}
         <div className='App'>
           <Layout>
-            <Header openModal={this.openModal} />
+            <Header
+              openSettings={this.openSettings}
+              openScores={this.openScores}
+            />
             <Settings
               visible={this.state.isModalVisible}
               handleCancel={this.handleCancel}
@@ -273,6 +325,11 @@ class App extends React.Component {
               onSnakeSpeedChange={this.onSnakeSpeedChange}
               snakeSpeed={this.state.currentSnakeSpeed}
             />
+            <BestScores
+              visible={this.state.isScoresVisible}
+              handleScoresClose={this.handleScoresClose}
+              data={this.state.bestScores}
+            />
             <Content className='content'>
               <Route
                 path='/game-over'
@@ -285,7 +342,11 @@ class App extends React.Component {
                 )}
               />
               <Route path='/' exact>
-                <Button size="large" type='primary'>
+                <Button
+                  size='large'
+                  type='primary'
+                  onClick={() => music.play()}
+                >
                   <Link to='game'>start</Link>
                 </Button>
               </Route>
