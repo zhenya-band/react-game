@@ -62,6 +62,17 @@ const Settings = (props) => {
           buttonStyle='solid'
         />
       </div>
+      <div className='settings-item'>
+        <div className="settings-item__title">Gameboard color</div>
+        <Radio.Group
+          className="settings-bgcolor"
+          options={props.bgColors}
+          onChange={props.onBgcolorChange}
+          value={props.currentBgcolor}
+          optionType='button'
+          buttonStyle='solid'
+        />
+      </div>
     </Modal>
   );
 };

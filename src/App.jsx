@@ -31,6 +31,12 @@ const snakeSpeeds = [
   { label: 'Fast', value: 50 },
 ];
 
+const bgColors = [
+  { label: 'Initial', value: '' },
+  { label: 'Gray', value: '#696969' },
+  { label: 'Brown', value: '#714c28' },
+];
+
 // const initialState = {
 //   snakeParts: initialSnakeParts,
 //   direction: 'RIGHT',
@@ -73,6 +79,8 @@ class App extends React.Component {
     currentSnakeSpeed: 150,
     snakeTypes: snakeTypes,
     snakeSpeeds: snakeSpeeds,
+    bgColors: bgColors,
+    currentBgcolor: '',
     bestScores: JSON.parse(localStorage.getItem('score')) || [],
   };
 
@@ -297,6 +305,12 @@ class App extends React.Component {
     });
   };
 
+  onBgcolorChange = (event) => {
+    this.setState({
+      currentBgcolor: event.target.value,
+    });
+  };
+
   handleCancel = () => this.setState({ isModalVisible: false });
 
   handleScoresClose = () => this.setState({ isScoresVisible: false });
@@ -324,6 +338,9 @@ class App extends React.Component {
               snakeSpeeds={this.state.snakeSpeeds}
               onSnakeSpeedChange={this.onSnakeSpeedChange}
               snakeSpeed={this.state.currentSnakeSpeed}
+              bgColors={this.state.bgColors}
+              onBgcolorChange={this.onBgcolorChange}
+              currentBgcolor={this.state.currentBgcolor}
             />
             <BestScores
               visible={this.state.isScoresVisible}
