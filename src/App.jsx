@@ -13,48 +13,13 @@ import Settings from './components/Settings/Settings';
 import { BrowserRouter, Route, Link, Redirect } from 'react-router-dom';
 import { Button } from 'antd';
 import { BestScores } from './components/BestScores/BestScores';
+import { snakeTypes, snakeSpeeds, bgColors } from './constants/settings';
 
 const initialSnakeParts = [
   [20, 0],
   [40, 0],
   [60, 0],
 ];
-
-const snakeTypes = [
-  { label: 'Square', value: 'Square' },
-  { label: 'Round', value: 'Round' },
-];
-
-const snakeSpeeds = [
-  { label: 'Slow', value: 150 },
-  { label: 'Medium', value: 100 },
-  { label: 'Fast', value: 50 },
-];
-
-const bgColors = [
-  { label: 'Initial', value: '' },
-  { label: 'Gray', value: '#696969' },
-  { label: 'Brown', value: '#714c28' },
-];
-
-// const initialState = {
-//   snakeParts: initialSnakeParts,
-//   direction: 'RIGHT',
-//   foodPosition: [80, 80],
-//   score: 3,
-//   snakeColor: 'green',
-//   isGameOver: false,
-//   musicIsPlaying: false,
-//   isModalVisible: false,
-//   isScoresVisible: false,
-//   musicVolume: 0.01,
-//   soundVolume: 0.2,
-//   currentSnakeType: 'Square',
-//   currentSnakeSpeed: 150,
-//   snakeTypes: snakeTypes,
-//   snakeSpeeds: snakeSpeeds,
-//   bestScores: JSON.parse(localStorage.getItem('score')) || [],
-// };
 
 const music = new Audio();
 music.src = musicUrl;
@@ -82,6 +47,7 @@ class App extends React.Component {
     bgColors: bgColors,
     currentBgcolor: '',
     bestScores: JSON.parse(localStorage.getItem('score')) || [],
+    isFullScreen: false,
   };
 
   state = this.initialState;
@@ -315,15 +281,59 @@ class App extends React.Component {
 
   handleScoresClose = () => this.setState({ isScoresVisible: false });
 
+  onFullScreen = () => {
+    const app = document.getElementById('app');
+    if (app) {
+      if (app.requestFullscreen) {
+        app.requestFullscreen();
+        this.setState({
+          isFullScreen: true,
+        });
+      } else if (app.webkitRequestFullscreen) {
+        app.webkitRequestFullscreen();
+        this.setState({
+          isFullScreen: true,
+        });
+      } else if (app.msRequestFullscreen) {
+        app.msRequestFullscreen();
+        this.setState({
+          isFullScreen: true,
+        });
+      }
+    }
+  };
+
+  offFullScreen = () => {
+    if (document.exitFullscreen) {
+      this.setState({
+        isFullScreen: false,
+      });
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      this.setState({
+        isFullScreen: false,
+      });
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      this.setState({
+        isFullScreen: false,
+      });
+      document.msExitFullscreen();
+    }
+  };
+
   render() {
     return (
       <BrowserRouter>
         {this.state.isGameOver && <Redirect to='/game-over' />}
-        <div className='App'>
+        <div className='App' id='app'>
           <Layout>
             <Header
               openSettings={this.openSettings}
               openScores={this.openScores}
+              isFullScreen={this.state.isFullScreen}
+              onFullScreen={this.onFullScreen}
+              offFullScreen={this.offFullScreen}
             />
             <Settings
               visible={this.state.isModalVisible}
