@@ -1,7 +1,7 @@
 import Modal from 'antd/lib/modal/Modal';
 import { Table } from 'antd';
 import React from 'react';
-import Item from 'antd/lib/list/Item';
+import './BestScores.css';
 
 const columns = [
   {

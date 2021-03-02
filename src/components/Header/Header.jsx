@@ -8,7 +8,7 @@ const Header = (props) => {
   return (
     <Layout.Header className='header'>
       <div className='headet-inner'>
-        <div className='logo'>Snake game</div>
+        <h1 className='logo'>Snake game</h1>
         <div className=''>
           <Button
             type='primary'

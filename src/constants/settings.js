@@ -4,7 +4,7 @@ export const snakeTypes = [
 ];
 
 export const snakeSpeeds = [
-  { label: 'Slow', value: 150 },
+  { label: 'Slow', value: 140 },
   { label: 'Medium', value: 100 },
   { label: 'Fast', value: 50 },
 ];

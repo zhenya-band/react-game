@@ -14,6 +14,7 @@ import { BrowserRouter, Route, Link, Redirect } from 'react-router-dom';
 import { Button } from 'antd';
 import { BestScores } from './components/BestScores/BestScores';
 import { snakeTypes, snakeSpeeds, bgColors } from './constants/settings';
+import Hotkeys from './components/Hotkeys/Hotkeys';
 
 const initialSnakeParts = [
   [20, 0],
@@ -41,7 +42,7 @@ class App extends React.Component {
     musicVolume: 0,
     soundVolume: 0.2,
     currentSnakeType: 'Square',
-    currentSnakeSpeed: 150,
+    currentSnakeSpeed: 140,
     snakeTypes: snakeTypes,
     snakeSpeeds: snakeSpeeds,
     bgColors: bgColors,
@@ -369,13 +370,16 @@ class App extends React.Component {
                 )}
               />
               <Route path='/' exact>
-                <Button
-                  size='large'
-                  type='primary'
-                  onClick={() => music.play()}
-                >
-                  <Link to='game'>start</Link>
-                </Button>
+                <div className="start-screen">
+                  <Hotkeys />
+                  <Button
+                    size='large'
+                    type='primary'
+                    onClick={() => music.play()}
+                  >
+                    <Link to='game'>start</Link>
+                  </Button>
+                </div>
               </Route>
               <Route
                 path='/game'

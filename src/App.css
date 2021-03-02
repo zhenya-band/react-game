@@ -24,3 +24,8 @@
   align-items: center;
   justify-content: center;
 }
+
+.start-screen {
+  display: flex;
+  flex-direction: column;
+}
