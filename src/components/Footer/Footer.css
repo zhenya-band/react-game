@@ -1,0 +1,25 @@
+.footer {
+  padding: 13px 0;
+  background-color: black;
+  color: white;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.footer-logo__img {
+  width: 70px;
+  background: white;
+  border-radius: 5px;
+  padding: 7px;
+}
+
+.footer-year {
+  font-weight: 600px;
+}

@@ -1,0 +1,5 @@
+export const initialSnakeParts = [
+  [20, 0],
+  [40, 0],
+  [60, 0],
+];
