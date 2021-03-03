@@ -1,6 +1,5 @@
 import React from 'react';
 import 'antd/dist/antd.css';
-import logo from './logo.svg';
 import './App.css';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
@@ -14,39 +13,43 @@ import { BrowserRouter, Route, Link, Redirect } from 'react-router-dom';
 import { Button } from 'antd';
 import { BestScores } from './components/BestScores/BestScores';
 import { snakeTypes, snakeSpeeds, bgColors } from './constants/settings';
+import { initialSnakeParts } from './constants/initialSnakeParts';
 import Hotkeys from './components/Hotkeys/Hotkeys';
-
-const initialSnakeParts = [
-  [20, 0],
-  [40, 0],
-  [60, 0],
-];
 
 const music = new Audio();
 music.src = musicUrl;
+music.loop = true;
+
 const eatSound = new Audio();
 eatSound.src = eatSoundUrl;
+
 let interval;
 
 class App extends React.Component {
   initialState = {
-    snakeParts: initialSnakeParts,
-    direction: 'RIGHT',
-    foodPosition: [80, 80],
-    score: 3,
-    snakeColor: 'green',
+    snakeParts:
+      JSON.parse(localStorage.getItem('state'))?.snakeParts ||
+      initialSnakeParts,
+    direction: JSON.parse(localStorage.getItem('state'))?.direction || 'RIGHT',
+    foodPosition: JSON.parse(localStorage.getItem('state'))?.foodPosition || [
+      80,
+      80,
+    ],
+    score: JSON.parse(localStorage.getItem('state'))?.score || 3,
     isGameOver: false,
     musicIsPlaying: false,
     isModalVisible: false,
     isScoresVisible: false,
-    musicVolume: 0,
+    musicVolume: 0.01,
     soundVolume: 0.2,
-    currentSnakeType: 'Square',
+    currentSnakeType:
+      JSON.parse(localStorage.getItem('state'))?.currentSnakeType || 'Square',
     currentSnakeSpeed: 140,
     snakeTypes: snakeTypes,
     snakeSpeeds: snakeSpeeds,
     bgColors: bgColors,
-    currentBgcolor: '',
+    currentBgcolor:
+      JSON.parse(localStorage.getItem('state'))?.currentBgcolor || '',
     bestScores: JSON.parse(localStorage.getItem('score')) || [],
     isFullScreen: false,
   };
@@ -68,6 +71,8 @@ class App extends React.Component {
     this.checkIfOnBorders();
     music.volume = this.state.musicVolume;
     eatSound.volume = this.state.soundVolume;
+
+    localStorage.setItem('state', JSON.stringify(this.state));
   }
 
   getRandomFoodPosition() {
@@ -181,7 +186,12 @@ class App extends React.Component {
   startNewGame = () => {
     this.setState({
       ...this.initialState,
-      bestScores: JSON.parse(localStorage.getItem('score')),
+      snakeParts: initialSnakeParts,
+      score: 3,
+      direction: 'RIGHT',
+      foodPosition: [80, 80],
+      // musicVolume: JSON.parse(localStorage.getItem('state')).musicVolume || 0.01,
+      bestScores: JSON.parse(localStorage.getItem('score')) || [],
     });
   };
 
@@ -370,12 +380,15 @@ class App extends React.Component {
                 )}
               />
               <Route path='/' exact>
-                <div className="start-screen">
+                <div className='start-screen'>
                   <Hotkeys />
                   <Button
                     size='large'
                     type='primary'
-                    onClick={() => music.play()}
+                    onClick={() => {
+                      music.play();
+                      this.startNewGame();
+                    }}
                   >
                     <Link to='game'>start</Link>
                   </Button>

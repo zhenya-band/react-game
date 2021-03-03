@@ -17,15 +17,18 @@ const columns = [
 ];
 
 export const BestScores = (props) => {
-  const data = props.data
-    .sort((a, b) => b.score - a.score)
-    .map((item, i) => {
-      item.number = i + 1;
-      return item;
-    });
-    if(data.length > 10) {
-      data.splice(10)
+  let data;
+  if (props.data) {
+    data = props.data
+      .sort((a, b) => b.score - a.score)
+      .map((item, i) => {
+        item.number = i + 1;
+        return item;
+      });
+    if (data.length > 10) {
+      data.splice(10);
     }
+  }
   return (
     <Modal
       className='settings'
