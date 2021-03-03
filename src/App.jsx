@@ -198,6 +198,8 @@ class App extends React.Component {
         JSON.parse(localStorage.getItem('state'))?.musicVolume || 0.01,
       currentSnakeSpeed:
         JSON.parse(localStorage.getItem('state'))?.currentSnakeSpeed || 0.01,
+      currentBgcolor: JSON.parse(localStorage.getItem('state'))?.currentBgcolor || '',
+      currentSnakeType: JSON.parse(localStorage.getItem('state'))?.currentSnakeType || 'Square',
       bestScores: JSON.parse(localStorage.getItem('score')) || [],
     });
   };
