@@ -40,11 +40,12 @@ class App extends React.Component {
     musicIsPlaying: false,
     isModalVisible: false,
     isScoresVisible: false,
-    musicVolume: 0.01,
-    soundVolume: 0.2,
+    musicVolume: JSON.parse(localStorage.getItem('state'))?.musicVolume || 0.01,
+    soundVolume: JSON.parse(localStorage.getItem('state'))?.soundVolume || 0.2,
     currentSnakeType:
       JSON.parse(localStorage.getItem('state'))?.currentSnakeType || 'Square',
-    currentSnakeSpeed: 140,
+    currentSnakeSpeed:
+      JSON.parse(localStorage.getItem('state'))?.currentSnakeSpeed || 140,
     snakeTypes: snakeTypes,
     snakeSpeeds: snakeSpeeds,
     bgColors: bgColors,
@@ -82,6 +83,9 @@ class App extends React.Component {
   }
 
   onKeyDown = (event) => {
+    if (music.paused) {
+      music.play();
+    }
     switch (event.keyCode) {
       case 38:
       case 87:
@@ -190,7 +194,8 @@ class App extends React.Component {
       score: 3,
       direction: 'RIGHT',
       foodPosition: [80, 80],
-      // musicVolume: JSON.parse(localStorage.getItem('state')).musicVolume || 0.01,
+      musicVolume:
+        JSON.parse(localStorage.getItem('state'))?.musicVolume || 0.01,
       bestScores: JSON.parse(localStorage.getItem('score')) || [],
     });
   };
