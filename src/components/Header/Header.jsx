@@ -1,10 +1,12 @@
 import React from 'react';
 import './Header.css';
 import { Layout, Button } from 'antd';
-import {FullscreenExitOutlined, FullscreenOutlined} from "@ant-design/icons/lib";
+import {
+  FullscreenExitOutlined,
+  FullscreenOutlined,
+} from '@ant-design/icons/lib';
 
 const Header = (props) => {
-
   return (
     <Layout.Header className='header'>
       <div className='headet-inner'>
@@ -17,7 +19,11 @@ const Header = (props) => {
           >
             Settings
           </Button>
-          <Button type='primary' className='scores-btn' onClick={props.openScores}>
+          <Button
+            type='primary'
+            className='scores-btn'
+            onClick={props.openScores}
+          >
             Best scores
           </Button>
           {props.isFullScreen ? (

@@ -196,6 +196,8 @@ class App extends React.Component {
       foodPosition: [80, 80],
       musicVolume:
         JSON.parse(localStorage.getItem('state'))?.musicVolume || 0.01,
+      currentSnakeSpeed:
+        JSON.parse(localStorage.getItem('state'))?.currentSnakeSpeed || 0.01,
       bestScores: JSON.parse(localStorage.getItem('score')) || [],
     });
   };
