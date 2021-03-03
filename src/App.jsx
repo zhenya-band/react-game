@@ -194,12 +194,16 @@ class App extends React.Component {
       score: 3,
       direction: 'RIGHT',
       foodPosition: [80, 80],
+      soundVolume:
+        JSON.parse(localStorage.getItem('state'))?.soundVolume,
       musicVolume:
-        JSON.parse(localStorage.getItem('state'))?.musicVolume || 0.01,
+        JSON.parse(localStorage.getItem('state')).musicVolume,
       currentSnakeSpeed:
-        JSON.parse(localStorage.getItem('state'))?.currentSnakeSpeed || 0.01,
-      currentBgcolor: JSON.parse(localStorage.getItem('state'))?.currentBgcolor || '',
-      currentSnakeType: JSON.parse(localStorage.getItem('state'))?.currentSnakeType || 'Square',
+        JSON.parse(localStorage.getItem('state'))?.currentSnakeSpeed || 140,
+      currentBgcolor:
+        JSON.parse(localStorage.getItem('state'))?.currentBgcolor || '',
+      currentSnakeType:
+        JSON.parse(localStorage.getItem('state'))?.currentSnakeType || 'Square',
       bestScores: JSON.parse(localStorage.getItem('score')) || [],
     });
   };
